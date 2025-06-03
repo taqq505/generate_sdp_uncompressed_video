@@ -78,16 +78,16 @@ Example output from the generated SDP file:
 
 ```
 v=0
-o=OPERATOR 1112223333 1112223333 IN IP4 10.30.71.10
+o=OPERATOR 1112223333 1112223333 IN IP4 10.0.0.10
 s=uncompressed_video_feed
 t=0 0
 a=group:DUP primary secondary
-m=video 50020 RTP/AVP 96
-c=IN IP4 239.107.1.1/64
+m=video 30000 RTP/AVP 96
+c=IN IP4 239.1.1.1/64
 a=rtpmap:96 raw/90000
 a=fmtp:96 sampling=YCbCr-4:2:2; width=1920; height=1080; depth=10; exactframerate=30000/1001; interlace; colorimetry=BT709; TCS=SDR; SSN=ST2110-20:2017; TP=2110TPN; PM=2110BPM;
-a=source-filter: incl IN IP4 239.107.1.1 10.30.71.10
-a=ts-refclk:localmac=00-09-0D-01-2B-EE
+a=source-filter: incl IN IP4 239.1.1.1 10.0.0.10
+a=ts-refclk:localmac=00-09-0D-11-22-EE
 a=mediaclk:direct=0
 a=mid:primary
 ```

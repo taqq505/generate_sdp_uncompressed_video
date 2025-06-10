@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+
+
 import argparse
 import sys
 import re
@@ -23,6 +25,7 @@ def sanitize_filename(name):
     name = re.sub(r'\s+', '_', name)
     name = re.sub(r'[^a-z0-9_]', '', name)
     return name + ".sdp"
+
 def interactive_mode():
     print("🛠 SDPファイルを生成します（対話モード）\n🛠 Generating SDP file (Interactive Mode)\n")
 
@@ -69,12 +72,23 @@ def generate_sdp(source_ip_1, multicast_ip_1, port_1,
                  session):
 
     width, height = resolution
-    interlace_flag = "interlace" if interlace else ""
-    fmtp_common = (
-        f"sampling=YCbCr-4:2:2; width={width}; height={height}; depth=10; "
-        f"exactframerate={framerate}; {interlace_flag} colorimetry=BT709; "
-        f"TCS=SDR; SSN=ST2110-20:2017; TP=2110TPN; PM=2110BPM;"
-    )
+    fmtp_parts = [
+        f"sampling=YCbCr-4:2:2",
+        f"width={width}",
+        f"height={height}",
+        f"depth=10",
+        f"exactframerate={framerate}"
+    ]
+    if interlace:
+        fmtp_parts.append("interlace")
+    fmtp_parts += [
+        "colorimetry=BT709",
+        "TCS=SDR",
+        "SSN=ST2110-20:2017",
+        "TP=2110TPN",
+        "PM=2110BPM"
+    ]
+    fmtp_common = '; '.join(fmtp_parts) + ";"
 
     origin = f"OPERATOR 1112223333 1112223333 IN IP4 {source_ip_1}"
 
@@ -125,11 +139,9 @@ if __name__ == "__main__":
         parser.add_argument("-s1", "--src1", required=True, help="Primary Source IP Address")
         parser.add_argument("-g1", "--grp1", required=True, help="Primary Multicast IP Address")
         parser.add_argument("-p1", "--port1", type=int, required=True, help="Primary Port")
-
         parser.add_argument("-s2", "--src2", help="Secondary Source IP Address")
         parser.add_argument("-g2", "--grp2", help="Secondary Multicast IP Address")
         parser.add_argument("-p2", "--port2", type=int, help="Secondary Port")
-
         parser.add_argument("-m1", "--mac1", default="00-09-0D-01-2B-EE", help="Primary MAC Address")
         parser.add_argument("-m2", "--mac2", default="00-09-0D-01-2B-EF", help="Secondary MAC Address")
         parser.add_argument("-r", "--resolution", type=parse_resolution, default=(1920, 1080), help="Resolution (e.g., 1920x1080)")
